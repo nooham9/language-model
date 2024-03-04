@@ -11,9 +11,9 @@ import os
 ## Data download: https://www.kaggle.com/c/dogs-vs-cats/data
 ## Location of images.  You should have two folder in this place:
 ## 'train' and 'test'
-imgDir = "../../data/images/cats-n-dogs"
+imgDir = "../../data"
 ## resize images to this dimension below
-imageWidth, imageHeight = 128, 128
+imageWidth, imageHeight = 256, 256
 imageSize = (imageWidth, imageHeight)
 imgChannels=3
 
@@ -21,7 +21,8 @@ imgChannels=3
 epochs = 1
 
 ## Prepare dataset for training model:
-filenames = os.listdir(os.path.join(imgDir, "train"))
+filenames = os.listdir(os.chdir("./data/train"))
+
 print(len(filenames), "images found")
 df = pd.DataFrame({
     'filename':filenames,
@@ -29,7 +30,7 @@ df = pd.DataFrame({
 })
 print("Training on", df.shape[0], "images")
 print("categories:\n", df.category.value_counts())
-# categories are "dog" and "cat"
+# categories are the 5 languages
 
 ## Create model
 from tensorflow.keras.models import Sequential
