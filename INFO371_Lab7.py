@@ -130,6 +130,7 @@ test_generator = ImageDataGenerator(
 phat = model.predict(test_generator)
 
 dfTest['category'] = np.argmax(phat, axis=-1)
-label_map = {0:"cat", 1:"dog"}
+label_map = {0:"EN", 1:"RU", 2:"ZN", 3:"DA", 4:"TH"}
 dfTest['category'] = dfTest['category'].replace(label_map)
-
+print(dfTest.head(20))
+print(phat)
