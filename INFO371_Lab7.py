@@ -20,7 +20,7 @@ imgChannels=3
 epochs = 1
 
 ## Prepare dataset for training model:
-filenames = os.listdir(os.chdir("./data/mini_train"))
+filenames = os.listdir(os.chdir("./data/train"))
 
 print(len(filenames), "images found")
 
@@ -95,7 +95,7 @@ trainGenerator = ImageDataGenerator(
 ).\
 flow_from_dataframe(
     df,
-    os.path.join(imgDir, "mini_train"),
+    os.path.join(imgDir, "train"),
     x_col='filename', 
     y_col='category',
     target_size=imageSize,
