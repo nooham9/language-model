@@ -108,5 +108,28 @@ history = model.fit(
     epochs=epochs
 )
 
+testDir = os.path.join(imgDir, "test")
+dfTest = pd.DataFrame({
+    'filename': os.listdir(testDir)
+})
+print(dfTest.shape, "test files read from", testDir)
 
+test_generator = ImageDataGenerator(
+    rescale=1./255
+    # do not randomize testing!
+).flow_from_dataframe(
+    dfTest,
+    os.path.join(imgDir, "test"),
+    x_col='filename',
+    class_mode = None,  # we don't want target for prediction
+    target_size = imageSize,
+    shuffle = False
+    # do _not_ randomize the order!
+    # this would clash with the file name order!
+)
+phat = model.predict(test_generator)
+
+dfTest['category'] = np.argmax(phat, axis=-1)
+label_map = {0:"cat", 1:"dog"}
+dfTest['category'] = dfTest['category'].replace(label_map)
 
