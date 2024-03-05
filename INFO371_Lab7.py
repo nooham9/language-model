@@ -8,7 +8,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator, load_img
 import matplotlib.pyplot as plt
 import os
 
-## Data download: https://www.kaggle.com/c/dogs-vs-cats/data
 ## Location of images.  You should have two folder in this place:
 ## 'train' and 'test'
 imgDir = "../../data"
@@ -47,7 +46,7 @@ print("categories:\n", df.category.value_counts())
 ## Create model
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D,MaxPooling2D,\
-    Dropout,Flatten,Dense,Activation,\
+    Dropout,Flatten,Dense, Activation,\
     BatchNormalization
 
 # sequential (not recursive) model (one input, one output)
@@ -96,10 +95,12 @@ trainGenerator = ImageDataGenerator(
 ).\
 flow_from_dataframe(
     df,
-    os.path.join(imgDir, "train"),
-    x_col='filename', y_col='category',
+    os.path.join(imgDir, "mini_train"),
+    x_col='filename', 
+    y_col='category',
     target_size=imageSize,
-    class_mode='categorical')
+    class_mode='categorical'
+)
 
 ## Model Training:
 history = model.fit(
@@ -107,38 +108,5 @@ history = model.fit(
     epochs=epochs
 )
 
-##  Test your model performance on custom data
-from PIL import Image
-import numpy as np
-##  feel free to add your images here, remove others!
-## pick 20 random file names from testing dir
-testFNames = np.random.choice(os.listdir(os.chdir("./data/train-cropped")), size=20)
-## add "test/" to these file names
-testFNames = ["train/" + f for f in testFNames]
 
-####END OF CURR CHANGES
 
-## replace first of these with our own images
-print("Plot example results")
-labelMap = {0:"cat", 1:"dog"}
-plt.figure(figsize=(12, 24))
-index = 1
-rows, cols = 4, 5
-for testFName in testFNames:
-    img = load_img(os.path.join(imgDir, testFNames[index-1]), target_size=imageSize)
-    plt.subplot(rows, cols, index)
-    plt.imshow(img)
-    im = Image.open(os.path.join(imgDir, testFName))
-    im = im.resize(imageSize)
-    im = np.expand_dims(im, axis=0)
-    im = np.array(im)
-    im = im/255
-    phat = model.predict([im])
-    pred = np.argmax(phat, axis=-1)[0]
-    print("sample image {} [{}] is {}".format(testFName, phat, labelMap[pred]))
-    plt.xlabel("{} ({:.3})".format(labelMap[pred], phat.max()))
-    if index >= len(testFNames):
-        break
-    index += 1
-plt.tight_layout()
-plt.show()
