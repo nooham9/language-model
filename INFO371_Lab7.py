@@ -36,6 +36,9 @@ df = pd.DataFrame({
     'filename':filenames,
     'category': [match_lang(filename, languages) for filename in filenames]
 })
+# ADJUST WHEN CHANGING LANGUAGES
+# limiting to just EN and ZN
+# df = df[df['category'].isin(['EN', 'ZN'])]
 
 print(df.sample(8))
 
@@ -75,7 +78,7 @@ model.add(Dropout(0.5))
 model.add(Dense(128, activation='relu'))
 model.add(BatchNormalization())
 model.add(Dropout(0.5))
-
+# ADJUST # WHEN CHANGING LANGUAGES
 model.add(Dense(5, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy',
@@ -107,7 +110,8 @@ history = model.fit(
     trainGenerator,
     epochs=epochs
 )
-
+# ADJUST WHEN CHANGING LANGUAGES
+# testDir = os.path.join(imgDir, "EN-ZN")
 testDir = os.path.join(imgDir, "test")
 dfTest = pd.DataFrame({
     'filename': os.listdir(testDir)
@@ -119,6 +123,7 @@ test_generator = ImageDataGenerator(
     # do not randomize testing!
 ).flow_from_dataframe(
     dfTest,
+    # os.path.join(imgDir, "EN-ZN"),
     os.path.join(imgDir, "test"),
     x_col='filename',
     class_mode = None,  # we don't want target for prediction
@@ -130,7 +135,10 @@ test_generator = ImageDataGenerator(
 phat = model.predict(test_generator)
 
 dfTest['category'] = np.argmax(phat, axis=-1)
+
+# ADJUST WHEN CHANGING LANGUAGES
 label_map = {0:"EN", 1:"RU", 2:"ZN", 3:"DA", 4:"TH"}
+# label_map = {0:"EN", 1:"ZN"}
 dfTest['category'] = dfTest['category'].replace(label_map)
-print(dfTest.head(20))
-print(phat)
+
+print(dfTest['category'].value_counts())
