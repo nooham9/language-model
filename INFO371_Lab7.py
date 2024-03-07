@@ -19,7 +19,7 @@ imageSize = (imageWidth, imageHeight)
 imgChannels= 1
 
 ## define other constants, including command line argument defaults
-epochs = 5
+epochs = 1
 
 ## Prepare dataset for training model:
 filenames = os.listdir(os.chdir("./data/train"))
@@ -127,11 +127,11 @@ history = model.fit(
 # ADJUST WHEN CHANGING LANGUAGES
 # testDir = os.path.join(imgDir, "EN-ZN")
 
-testDir = os.listdir(os.chdir("./data/test"))
-
+testDir = os.path.join(imgDir, "test")
+fNames = os.listdir(testDir)
 dfTest = pd.DataFrame({
-    'filename': testDir,
-    'category': [match_lang(filename, languages) for filename in testDir]
+    'filename': fNames,
+    'category': [match_lang(filename, languages) for filename in fNames]
 })
 print(dfTest.shape, "test files read from", testDir)
 
