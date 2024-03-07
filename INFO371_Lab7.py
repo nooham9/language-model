@@ -19,7 +19,7 @@ imageSize = (imageWidth, imageHeight)
 imgChannels= 1
 
 ## define other constants, including command line argument defaults
-epochs = 1
+epochs = 10
 
 ## Prepare dataset for training model:
 filenames = os.listdir(os.chdir("./data/train"))
