@@ -127,10 +127,11 @@ history = model.fit(
 # ADJUST WHEN CHANGING LANGUAGES
 # testDir = os.path.join(imgDir, "EN-ZN")
 
-testDir = os.path.join(imgDir, "test")
+testDir = os.listdir(os.chdir("./data/test"))
+
 dfTest = pd.DataFrame({
-    'filename': os.listdir(testDir),
-    'category': [match_lang(filename, languages) for filename in filenames]
+    'filename': testDir,
+    'category': [match_lang(filename, languages) for filename in testDir]
 })
 print(dfTest.shape, "test files read from", testDir)
 
