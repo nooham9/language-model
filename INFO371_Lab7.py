@@ -60,8 +60,8 @@ from tensorflow.keras.layers import Conv2D,\
 model=Sequential()
 
 model.add(Conv2D(32,
-                 kernel_size= 3,
-                 strides = 1,
+                 kernel_size= 9,
+                 strides = 6,
                  activation='relu',
                  kernel_initializer = initializers.HeNormal(),
                  input_shape=(imageWidth, imageHeight, imgChannels)))
@@ -80,22 +80,15 @@ model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.25))
 
 model.add(Conv2D(128,
-                 kernel_size= 9,
-                 strides = 2, #3
+                 kernel_size= 3,
+                 strides = 2, 
                  kernel_initializer = initializers.HeNormal(),
                  activation='relu'))
 model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=2))
+model.add(MaxPooling2D(pool_size=1))
 model.add(Dropout(0.25))
 
-model.add(Conv2D(256,
-                 kernel_size= 3,
-                 strides = 1,
-                 kernel_initializer = initializers.HeNormal(),
-                 activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=2))
-model.add(Dropout(0.25))
+
 
 model.add(Flatten())
 model.add(Dense(256, activation='relu'))
