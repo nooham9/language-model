@@ -19,7 +19,7 @@ imageSize = (imageWidth, imageHeight)
 imgChannels= 1
 
 ## define other constants, including command line argument defaults
-epochs = 5  
+epochs = 10
 
 ## Prepare dataset for training model:
 filenames = os.listdir(os.chdir("./data/train"))
@@ -60,31 +60,22 @@ from tensorflow.keras.layers import Conv2D,\
 model=Sequential()
 
 model.add(Conv2D(64,
-                 kernel_size= 6,
-                 strides = 3,
+                 kernel_size= 3,
+                 strides = 1,
                  activation='relu',
                  kernel_initializer = initializers.HeNormal(),
                  input_shape=(imageWidth, imageHeight, imgChannels)))
 model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=1))
+model.add(MaxPooling2D(pool_size=3))
 model.add(Dropout(0.25))
 
 model.add(Conv2D(128,
-                 kernel_size= 6,
-                 strides = 3,
+                 kernel_size= 3,
                  kernel_initializer = initializers.HeNormal(),
-                 activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=1))
-model.add(Dropout(0.25))
 
-model.add(Conv2D(256,
-                 kernel_size= 6,
-                 strides = 3,
-                 kernel_initializer = initializers.HeNormal(),
                  activation='relu'))
 model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=1))
+model.add(MaxPooling2D(pool_size=3))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
@@ -126,8 +117,6 @@ history = model.fit(
 
 # ADJUST WHEN CHANGING LANGUAGES
 # testDir = os.path.join(imgDir, "EN-ZN")
-languages = ["EN", "RU", "ZN", "DA", "TH"]
-
 
 testDir = os.path.join(imgDir, "test")
 fNames = os.listdir(testDir)
@@ -153,53 +142,14 @@ test_generator = ImageDataGenerator(
     color_mode="grayscale"
 )
 phat = model.predict(test_generator)
-# ADJUST WHEN CHANGING LANGUAGES
-languages = ["EN", "RU", "ZN", "DA", "TH"]
+print(phat)
+dfTest['category'] = np.argmax(phat, axis=-1)
+print(dfTest['category'])
 
+# ADJUST WHEN CHANGING LANGUAGES
 label_map = {0:"EN", 1:"RU", 2:"ZN", 3:"DA", 4:"TH"}
+dfTest['category'] = dfTest['category'].replace(label_map)
 print("post mapping")
 print(dfTest['category'].value_counts())
 
 
-dfTest['predicted'] = pd.Series(np.argmax(phat, axis = -1))
-print(dfTest.head())
-
-dfTest["predicted"] = dfTest.predicted.replace(label_map)
-print(dfTest['predicted'].value_counts())
-
-print("confusion matrix (validation)")
-print(pd.crosstab(dfTest.category, dfTest.predicted))
-print("Validation accuracy", np.mean(dfTest.category == dfTest.predicted))
-
-## Print and plot misclassified results
-wrongResults = dfTest[dfTest.predicted != dfTest.category]
-rows = np.random.choice(wrongResults.index, min(4, wrongResults.shape[0]), replace=False)
-print("Example wrong results (validation data)")
-print(wrongResults.sample(min(10, wrongResults.shape[0])))
-
-## Plot 4 wrong and 4 correct results
-plt.figure(figsize=(12, 12))
-index = 1
-for row in rows:
-    filename = wrongResults.loc[row, 'filename']
-    predicted = wrongResults.loc[row, 'predicted']
-    img = load_img(os.path.join(imgDir, "test", filename), target_size=imageSize)
-    plt.subplot(4, 2, index)
-    plt.imshow(img)
-    plt.xlabel(filename + " ({})".format(predicted))
-    index += 1
-# now show correct results
-index = 5
-correctResults = dfTest[dfTest.predicted == dfTest.category]
-rows = np.random.choice(correctResults.index,
-                        min(4, correctResults.shape[0]), replace=False)
-for row in rows:
-    filename = correctResults.loc[row, 'filename']
-    predicted = correctResults.loc[row, 'predicted']
-    img = load_img(os.path.join(imgDir, "test", filename), target_size=imageSize)
-    plt.subplot(4, 2, index)
-    plt.imshow(img)
-    plt.xlabel(filename + " ({})".format(predicted))
-    index += 1
-plt.tight_layout()
-plt.show()
