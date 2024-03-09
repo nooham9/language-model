@@ -19,7 +19,7 @@ imageSize = (imageWidth, imageHeight)
 imgChannels= 1
 
 ## define other constants, including command line argument defaults
-epochs = 5  
+epochs =10 
 
 ## Prepare dataset for training model:
 filenames = os.listdir(os.chdir("./data/train"))
@@ -59,32 +59,32 @@ from tensorflow.keras.layers import Conv2D,\
 # sequential (not recursive) model (one input, one output)
 model=Sequential()
 
-model.add(Conv2D(64,
+model.add(Conv2D(32,
                  kernel_size= 6,
                  strides = 3,
                  activation='relu',
                  kernel_initializer = initializers.HeNormal(),
                  input_shape=(imageWidth, imageHeight, imgChannels)))
 model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=1))
+model.add(MaxPooling2D(pool_size=2))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(64,
+                 kernel_size= 3,
+                 strides = 1,
+                 kernel_initializer = initializers.HeNormal(),
+                 activation='relu'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.25))
 
 model.add(Conv2D(128,
-                 kernel_size= 6,
-                 strides = 3,
+                 kernel_size= 3,
+                 strides = 1,
                  kernel_initializer = initializers.HeNormal(),
                  activation='relu'))
 model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=1))
-model.add(Dropout(0.25))
-
-model.add(Conv2D(256,
-                 kernel_size= 6,
-                 strides = 3,
-                 kernel_initializer = initializers.HeNormal(),
-                 activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=1))
+model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
