@@ -19,7 +19,7 @@ imageSize = (imageWidth, imageHeight)
 imgChannels= 1
 
 ## define other constants, including command line argument defaults
-epochs =10 
+epochs = 10 
 
 ## Prepare dataset for training model:
 filenames = os.listdir(os.chdir("./data/train"))
@@ -70,7 +70,7 @@ model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.25))
 
 model.add(Conv2D(128,
-                 kernel_size= 6,
+                 kernel_size= 9,
                  strides = 3,
                  kernel_initializer = initializers.HeNormal(),
                  activation='relu'))
@@ -79,8 +79,8 @@ model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.25))
 
 model.add(Conv2D(256,
-                 kernel_size= 6,
-                 strides = 3,
+                 kernel_size= 3,
+                 strides = 1,
                  kernel_initializer = initializers.HeNormal(),
                  activation='relu'))
 model.add(BatchNormalization())
@@ -115,7 +115,7 @@ flow_from_dataframe(
     target_size=imageSize,
     class_mode='categorical',
     color_mode="grayscale",
-    shuffle=True
+    shuffle=False
 )
 
 ## Model Training:
@@ -126,8 +126,6 @@ history = model.fit(
 
 # ADJUST WHEN CHANGING LANGUAGES
 # testDir = os.path.join(imgDir, "EN-ZN")
-languages = ["EN", "RU", "ZN", "DA", "TH"]
-
 
 testDir = os.path.join(imgDir, "test")
 fNames = os.listdir(testDir)
@@ -142,7 +140,6 @@ test_generator = ImageDataGenerator(
     # do not randomize testing!
 ).flow_from_dataframe(
     dfTest,
-    # os.path.join(imgDir, "EN-ZN"),
     testDir,
     x_col='filename',
     class_mode = None,  # we don't want target for prediction
