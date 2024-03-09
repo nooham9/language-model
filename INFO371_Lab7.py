@@ -81,7 +81,7 @@ model.add(Dropout(0.25))
 
 model.add(Conv2D(128,
                  kernel_size= 9,
-                 strides = 3,
+                 strides = 2, #3
                  kernel_initializer = initializers.HeNormal(),
                  activation='relu'))
 model.add(BatchNormalization())
