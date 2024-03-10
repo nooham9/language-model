@@ -5,7 +5,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator, load_img
 from tensorflow.keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import os
 import sys
@@ -19,10 +19,10 @@ imageSize = (imageWidth, imageHeight)
 imgChannels= 1
 
 ## define other constants, including command line argument defaults
-epochs = 10 
+epochs = 30 
 
 ## Prepare dataset for training model:
-filenames = os.listdir(os.chdir("./data/train"))
+filenames = os.listdir(os.chdir("./data/big-train"))
 
 print(len(filenames), "images found")
 
@@ -113,7 +113,7 @@ trainGenerator = ImageDataGenerator(
 ).\
 flow_from_dataframe(
     df,
-    os.path.join(imgDir, "train"),
+    os.path.join(imgDir, "big-train"),
     x_col='filename', y_col='category',
     target_size=imageSize,
     class_mode='categorical',
@@ -130,7 +130,7 @@ history = model.fit(
 # ADJUST WHEN CHANGING LANGUAGES
 # testDir = os.path.join(imgDir, "EN-ZN")
 
-testDir = os.path.join(imgDir, "test")
+testDir = os.path.join(imgDir, "big-test")
 fNames = os.listdir(testDir)
 dfTest = pd.DataFrame({
     'filename': fNames,
@@ -196,7 +196,7 @@ rows = np.random.choice(correctResults.index,
 for row in rows:
     filename = correctResults.loc[row, 'filename']
     predicted = correctResults.loc[row, 'predicted']
-    img = load_img(os.path.join(imgDir, "test", filename), target_size=imageSize)
+    img = load_img(os.path.join(imgDir, "big-test", filename), target_size=imageSize)
     plt.subplot(4, 2, index)
     plt.imshow(img)
     plt.xlabel(filename + " ({})".format(predicted))
